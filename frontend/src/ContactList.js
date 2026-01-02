@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function ContactList() {
+function ContactList({ refresh }) {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     fetchContacts();
-  }, []);
+  }, [refresh]);
 
   const fetchContacts = async () => {
-  try {
-    const response = await axios.get(
-      "https://contact-management-backend-nnw3.onrender.com/api/contacts"
-    );
-    setContacts(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
+    try {
+      const response = await axios.get(
+        "https://contact-management-backend-nnw3.onrender.com/api/contacts"
+      );
+      setContacts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>

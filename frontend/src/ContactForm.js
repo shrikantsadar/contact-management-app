@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function ContactForm() {
+function ContactForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,9 +24,9 @@ function ContactForm() {
 
     try {
       await axios.post(
-  "https://contact-management-backend-nnw3.onrender.com/api/contacts",
-  formData
-);
+        "https://contact-management-backend-nnw3.onrender.com/api/contacts",
+        formData
+      );
 
       alert("Contact saved successfully");
 
@@ -36,6 +36,8 @@ function ContactForm() {
         phone: "",
         message: "",
       });
+
+      onSuccess(); // ✅ refresh list
     } catch (error) {
       console.error(error);
       alert("Error saving contact");
