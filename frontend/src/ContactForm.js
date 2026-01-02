@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function ContactForm({ onSuccess }) {
+function ContactForm({ onContactAdded }) {   // 🔄 rename prop
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,8 +28,6 @@ function ContactForm({ onSuccess }) {
         formData
       );
 
-      alert("Contact saved successfully");
-
       setFormData({
         name: "",
         email: "",
@@ -37,7 +35,7 @@ function ContactForm({ onSuccess }) {
         message: "",
       });
 
-      onSuccess(); // ✅ refresh list
+      onContactAdded(); // ✅ triggers re-fetch in App.js
     } catch (error) {
       console.error(error);
       alert("Error saving contact");
@@ -48,39 +46,10 @@ function ContactForm({ onSuccess }) {
     <form onSubmit={handleSubmit}>
       <h2>Add Contact</h2>
 
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="text"
-        name="phone"
-        placeholder="Phone"
-        value={formData.phone}
-        onChange={handleChange}
-        required
-      />
-
-      <textarea
-        name="message"
-        placeholder="Message (optional)"
-        value={formData.message}
-        onChange={handleChange}
-      />
+      <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+      <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+      <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+      <textarea name="message" placeholder="Message (optional)" value={formData.message} onChange={handleChange} />
 
       <button type="submit" disabled={!isFormValid}>
         Submit

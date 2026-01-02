@@ -1,38 +1,17 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-function ContactList({ refresh }) {
-  const [contacts, setContacts] = useState([]);
-
-  useEffect(() => {
-    fetchContacts();
-  }, [refresh]);
-
-  const fetchContacts = async () => {
-    try {
-      const response = await axios.get(
-        "https://contact-management-backend-nnw3.onrender.com/api/contacts"
-      );
-      setContacts(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+function ContactList({ contacts }) {
   return (
     <div>
       <h2>Submitted Contacts</h2>
-
       {contacts.length === 0 ? (
         <p>No contacts found</p>
       ) : (
         <ul>
-          {contacts.map((contact) => (
-            <li key={contact._id} className="contact-item">
-              <strong>{contact.name}</strong> <br />
-              {contact.email} <br />
-              {contact.phone} <br />
-              {contact.message}
+          {contacts.map((c) => (
+            <li key={c._id}>
+              <strong>{c.name}</strong><br />
+              {c.email}<br />
+              {c.phone}<br />
+              {c.message}
             </li>
           ))}
         </ul>
