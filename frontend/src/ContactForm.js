@@ -23,7 +23,11 @@ function ContactForm() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/contacts", formData);
+      await axios.post(
+  "https://contact-management-backend-nnw3.onrender.com/api/contacts",
+  formData
+);
+
       alert("Contact saved successfully");
 
       setFormData({
