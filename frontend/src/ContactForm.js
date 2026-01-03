@@ -11,14 +11,13 @@ function ContactForm({ onContactAdded }) {
 
   const [status, setStatus] = useState("");
 
-  // Generic handler (name, email, message)
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Phone handler (ONLY 10 DIGITS)
+  
   const handlePhoneChange = (e) => {
-    let value = e.target.value.replace(/\D/g, ""); // digits only
+    let value = e.target.value.replace(/\D/g, ""); 
 
     if (value.length <= 10) {
       setFormData({ ...formData, phone: value });
@@ -28,7 +27,7 @@ function ContactForm({ onContactAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔒 Final validation (VERY IMPORTANT)
+    
     if (formData.phone.length !== 10) {
       setStatus("Phone number must be exactly 10 digits");
       setTimeout(() => setStatus(""), 3000);

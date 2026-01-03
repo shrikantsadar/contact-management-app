@@ -15,12 +15,11 @@ function ContactList({ contacts, onContactChange }) {
 
   const startEdit = (c) => {
     setEditingId(c._id);
-    setEditData({ ...c }); // clone object
+    setEditData({ ...c }); 
   };
 
-  // 🔒 Phone handler for EDIT (10 digits only)
   const handleEditPhoneChange = (e) => {
-    let value = e.target.value.replace(/\D/g, ""); // digits only
+    let value = e.target.value.replace(/\D/g, ""); 
 
     if (value.length <= 10) {
       setEditData({ ...editData, phone: value });
@@ -28,7 +27,7 @@ function ContactList({ contacts, onContactChange }) {
   };
 
   const saveEdit = async (id) => {
-    // 🔒 Final validation before update
+    
     if (!/^\d{10}$/.test(editData.phone)) {
       setStatus("Phone number must be exactly 10 digits");
       setTimeout(() => setStatus(""), 3000);
