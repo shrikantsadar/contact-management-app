@@ -15,10 +15,26 @@ function ContactList({ contacts, onContactChange }) {
 
   const startEdit = (c) => {
     setEditingId(c._id);
-    setEditData(c);
+    setEditData({ ...c }); // clone object
+  };
+
+  // 🔒 Phone handler for EDIT (10 digits only)
+  const handleEditPhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // digits only
+
+    if (value.length <= 10) {
+      setEditData({ ...editData, phone: value });
+    }
   };
 
   const saveEdit = async (id) => {
+    // 🔒 Final validation before update
+    if (!/^\d{10}$/.test(editData.phone)) {
+      setStatus("Phone number must be exactly 10 digits");
+      setTimeout(() => setStatus(""), 3000);
+      return;
+    }
+
     try {
       await axios.put(
         `https://contact-management-backend-nnw3.onrender.com/api/contacts/${id}`,
@@ -78,13 +94,14 @@ function ContactList({ contacts, onContactChange }) {
                       }
                     />
                     <input
+                      type="text"
                       value={editData.phone}
-                      onChange={(e) =>
-                        setEditData({ ...editData, phone: e.target.value })
-                      }
+                      onChange={handleEditPhoneChange}
+                      maxLength="10"
+                      placeholder="10-digit phone"
                     />
                     <textarea
-                      value={editData.message}
+                      value={editData.message || ""}
                       onChange={(e) =>
                         setEditData({ ...editData, message: e.target.value })
                       }
@@ -110,7 +127,6 @@ function ContactList({ contacts, onContactChange }) {
             ))}
           </ul>
 
-       
           <div style={{ textAlign: "center", marginTop: "20px" }}>
             <button onClick={() => setSortAsc(!sortAsc)}>
               Sort by Name ({sortAsc ? "A → Z" : "Z → A"})

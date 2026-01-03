@@ -11,12 +11,29 @@ function ContactForm({ onContactAdded }) {
 
   const [status, setStatus] = useState("");
 
+  // Generic handler (name, email, message)
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Phone handler (ONLY 10 DIGITS)
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // digits only
+
+    if (value.length <= 10) {
+      setFormData({ ...formData, phone: value });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 🔒 Final validation (VERY IMPORTANT)
+    if (formData.phone.length !== 10) {
+      setStatus("Phone number must be exactly 10 digits");
+      setTimeout(() => setStatus(""), 3000);
+      return;
+    }
 
     try {
       await axios.post(
@@ -42,7 +59,13 @@ function ContactForm({ onContactAdded }) {
       <form onSubmit={handleSubmit}>
         <h2>Add Contact</h2>
 
-        <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+        <input
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
 
         <input
           type="email"
@@ -54,14 +77,12 @@ function ContactForm({ onContactAdded }) {
         />
 
         <input
-          type="tel"
+          type="text"
           name="phone"
           placeholder="Phone (10 digits)"
           value={formData.phone}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\D/g, "");
-            if (val.length <= 10) setFormData({ ...formData, phone: val });
-          }}
+          onChange={handlePhoneChange}
+          maxLength="10"
           required
         />
 
