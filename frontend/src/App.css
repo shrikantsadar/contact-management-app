@@ -107,3 +107,84 @@ form {
 .sort-btn {
   margin-bottom: 25px;
 }
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.app-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #222;
+}
+body {
+  background: #f4f6f8;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  max-width: 750px;
+  margin: 40px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.app-logo {
+  width: 50px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, textarea {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.contact-card {
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background: #fafafa;
+}
+
+.status {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background: #e6f7ec;
+  color: #1e7e34;
+  border: 1px solid #b7e4c7;
+}

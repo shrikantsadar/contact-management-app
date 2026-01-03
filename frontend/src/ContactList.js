@@ -3,28 +3,19 @@ import axios from "axios";
 
 function ContactList({ contacts, onContactChange }) {
   const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
+  const [editData, setEditData] = useState({});
+  const [status, setStatus] = useState("");
+  const [sortAsc, setSortAsc] = useState(true);
 
-  const startEdit = (contact) => {
-    setEditingId(contact._id);
-    setEditData({
-      name: contact.name,
-      email: contact.email,
-      phone: contact.phone,
-      message: contact.message || "",
-    });
-  };
+  const sortedContacts = [...contacts].sort((a, b) =>
+    sortAsc
+      ? a.name.localeCompare(b.name)
+      : b.name.localeCompare(a.name)
+  );
 
-  const handleEditChange = (e) => {
-    setEditData({
-      ...editData,
-      [e.target.name]: e.target.value,
-    });
+  const startEdit = (c) => {
+    setEditingId(c._id);
+    setEditData(c);
   };
 
   const saveEdit = async (id) => {
@@ -34,22 +25,28 @@ function ContactList({ contacts, onContactChange }) {
         editData
       );
       setEditingId(null);
+      setStatus("Contact updated successfully");
       onContactChange();
-    } catch (error) {
-      alert("Error updating contact");
+      setTimeout(() => setStatus(""), 3000);
+    } catch {
+      setStatus("Error updating contact");
+      setTimeout(() => setStatus(""), 3000);
     }
   };
 
-  const handleDelete = async (id) => {
+  const deleteContact = async (id) => {
     if (!window.confirm("Delete this contact?")) return;
 
     try {
       await axios.delete(
         `https://contact-management-backend-nnw3.onrender.com/api/contacts/${id}`
       );
+      setStatus("Contact deleted successfully");
       onContactChange();
-    } catch (error) {
-      alert("Error deleting contact");
+      setTimeout(() => setStatus(""), 3000);
+    } catch {
+      setStatus("Error deleting contact");
+      setTimeout(() => setStatus(""), 3000);
     }
   };
 
@@ -57,36 +54,69 @@ function ContactList({ contacts, onContactChange }) {
     <div className="contact-list">
       <h2>Submitted Contacts</h2>
 
-      {contacts.length === 0 ? (
+      {status && <div className="status success">{status}</div>}
+
+      {sortedContacts.length === 0 ? (
         <p>No contacts found</p>
       ) : (
-        <ul>
-          {contacts.map((c) => (
-            <li key={c._id} className="contact-card">
-              {editingId === c._id ? (
-                <>
-                  <input name="name" value={editData.name} onChange={handleEditChange} />
-                  <input name="email" value={editData.email} onChange={handleEditChange} />
-                  <input name="phone" value={editData.phone} onChange={handleEditChange} />
-                  <textarea name="message" value={editData.message} onChange={handleEditChange} />
+        <>
+          <ul>
+            {sortedContacts.map((c) => (
+              <li key={c._id} className="contact-card">
+                {editingId === c._id ? (
+                  <>
+                    <input
+                      value={editData.name}
+                      onChange={(e) =>
+                        setEditData({ ...editData, name: e.target.value })
+                      }
+                    />
+                    <input
+                      value={editData.email}
+                      onChange={(e) =>
+                        setEditData({ ...editData, email: e.target.value })
+                      }
+                    />
+                    <input
+                      value={editData.phone}
+                      onChange={(e) =>
+                        setEditData({ ...editData, phone: e.target.value })
+                      }
+                    />
+                    <textarea
+                      value={editData.message}
+                      onChange={(e) =>
+                        setEditData({ ...editData, message: e.target.value })
+                      }
+                    />
 
-                  <button onClick={() => saveEdit(c._id)}>Save</button>
-                  <button onClick={() => setEditingId(null)}>Cancel</button>
-                </>
-              ) : (
-                <>
-                  <p><strong>Name:</strong> {c.name}</p>
-                  <p><strong>Email:</strong> {c.email}</p>
-                  <p><strong>Phone:</strong> {c.phone}</p>
-                  {c.message && <p><strong>Message:</strong> {c.message}</p>}
+                    <button onClick={() => saveEdit(c._id)}>Save</button>
+                    <button onClick={() => setEditingId(null)}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <p><strong>Name:</strong> {c.name}</p>
+                    <p><strong>Email:</strong> {c.email}</p>
+                    <p><strong>Phone:</strong> {c.phone}</p>
+                    {c.message && (
+                      <p><strong>Message:</strong> {c.message}</p>
+                    )}
 
-                  <button onClick={() => startEdit(c)}>Edit</button>
-                  <button onClick={() => handleDelete(c._id)}>Delete</button>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+                    <button onClick={() => startEdit(c)}>Edit</button>
+                    <button onClick={() => deleteContact(c._id)}>Delete</button>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+
+       
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <button onClick={() => setSortAsc(!sortAsc)}>
+              Sort by Name ({sortAsc ? "A → Z" : "Z → A"})
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

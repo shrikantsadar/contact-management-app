@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function ContactForm({ onContactAdded }) {   // 🔄 rename prop
+function ContactForm({ onContactAdded }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -9,15 +9,11 @@ function ContactForm({ onContactAdded }) {   // 🔄 rename prop
     message: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [status, setStatus] = useState("");
 
-  const isFormValid =
-    formData.name && formData.email && formData.phone;
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,42 +24,57 @@ function ContactForm({ onContactAdded }) {   // 🔄 rename prop
         formData
       );
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-      });
+      setStatus("Contact added successfully");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      onContactAdded();
 
-      onContactAdded(); // ✅ triggers re-fetch in App.js
-    } catch (error) {
-      console.error(error);
-      alert("Error saving contact");
+      setTimeout(() => setStatus(""), 3000);
+    } catch {
+      setStatus("Error adding contact");
+      setTimeout(() => setStatus(""), 3000);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add Contact</h2>
+    <>
+      {status && <div className="status success">{status}</div>}
 
-      <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-      <input type="email"  name="email"  placeholder="Email"  value={formData.email}  onChange={handleChange} pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required/>
-     <input type="tel" name="phone" placeholder="Phone (10 digits)" value={formData.phone} onChange={(e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 10) {
-      setFormData({ ...formData, phone: value });
-    }
-  }}
-  pattern="[0-9]{10}"
-  required
-/>
+      <form onSubmit={handleSubmit}>
+        <h2>Add Contact</h2>
 
-      <textarea name="message" placeholder="Message (optional)" value={formData.message} onChange={handleChange} />
+        <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
 
-      <button type="submit" disabled={!isFormValid}>
-        Submit
-      </button>
-    </form>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          type="tel"
+          name="phone"
+          placeholder="Phone (10 digits)"
+          value={formData.phone}
+          onChange={(e) => {
+            const val = e.target.value.replace(/\D/g, "");
+            if (val.length <= 10) setFormData({ ...formData, phone: val });
+          }}
+          required
+        />
+
+        <textarea
+          name="message"
+          placeholder="Message (optional)"
+          value={formData.message}
+          onChange={handleChange}
+        />
+
+        <button type="submit">Submit</button>
+      </form>
+    </>
   );
 }
 
